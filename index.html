@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chukua Picha</title>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2.6.4/dist/email.min.js"></script>
+  <script>
+    (function() {
+      emailjs.init("w9dVJ6diDwg5XuuXd"); // Replace with your EmailJS public key
+    })();
+  </script>
+</head>
+<body>
+  <h2>Piga Picha na Tuma kwa Email</h2>
+  <video id="video" width="300" autoplay></video><br>
+  <button onclick="takePhoto()">Piga Picha</button>
+  <canvas id="canvas" width="300" height="200" style="display:none;"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+
+    // Fungua kamera
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      });
+
+    function takePhoto() {
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL('image/png');
+
+      const templateParams = {
+        to_name: "Jina lako",
+        message: "Picha mpya imetumwa",
+        image_data: imageData
+      };
+
+      emailjs.send('SERVICE_sxknave', 'TEMPLATE_sjw1wrn', templateParams)
+        .then(response => {
+          alert('Picha imetumwa kwenye email!');
+        }, error => {
+          alert('Imeshindwa kutuma picha:', error);
+        });
+    }
+  </script>
+</body>
+</html>
